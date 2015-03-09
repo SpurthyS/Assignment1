@@ -3,25 +3,20 @@ package controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
-/**
- * Created by Spurthy on 3/8/2015.
- */
 @Configuration
 @ComponentScan
 @EnableWebMvcSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter
+{
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("foo").password("bar").roles("USER");
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception
+    {
+        auth.inMemoryAuthentication().withUser("foo").password("bar").roles("USER");
     }
 
     @Override
@@ -30,28 +25,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/api/v1/moderators/*")
-                .hasRole("USER")
-                .and()
-                .httpBasic();
+                .antMatchers("/api/v1/moderators/", "/api/v1/polls/*/").permitAll().anyRequest().authenticated()
+                 .and()
 
-        http
-                .csrf().disable()
+                               .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.PUT,"/api/v1/moderators/*")
-                .hasRole("USER")
-                .and()
-                .httpBasic();
-
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.DELETE,"/api/v1/moderators/*")
+                .antMatchers("/api/v1/moderators/*")
                 .hasRole("USER")
                 .and()
                 .httpBasic();
 
 
-    }
-
-}
+    }}
